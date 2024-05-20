@@ -1,6 +1,6 @@
 {
   "scripts": {
     "start": "node backend/src/server.js",
-    "build": "cd frontend && yarn build && cd ../backend && yarn"
+    "build": "cd frontend && yarn && yarn build && cd ../backend && yarn"
   }
 }
