@@ -12,7 +12,8 @@
   "private": true,
   "license": "ISC",
   "scripts": {
-    "dev": "nodemon ./src/server.js"
+    "dev": "nodemon ./src/server.js",
+    "start": "node ./src/server.js"
   },
   "dependencies": {
     "@prisma/client": "^5.14.0",
