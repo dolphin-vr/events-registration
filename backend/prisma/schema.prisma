@@ -22,7 +22,6 @@ model Participant {
   email       String   @unique
   dateOfBirth DateTime
   events      Lists[]
-  eventId     Int
 }
 
 model Lists {

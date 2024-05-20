@@ -16,28 +16,40 @@ const getEventById = async eventId => {
   });
 };
 
-// skip, take: number (page and limit) 
+// skip, take: number (page and limit)
 const getEvents = async pagination => {
-  const { skip, take } = pagination;
-  return await prisma.event.findMany({
-    skip: skip,
+  const skip = parseInt(pagination.page, 10) || 1;
+  const take = parseInt(pagination.limit, 10) || 10;
+  const events = await prisma.event.findMany({
+    skip: (skip-1)*take,
     take: take,
   });
+  const total = await prisma.event.count();
+  const result = { total, events };
+  return result;
 };
 
 // participantData: Participant
-const registerParticipant = async (participantData, eventId, heardFrom) => {
+const registerParticipant = async (participantData, eventId) => {
   const participant = await prisma.participant.upsert({
     where: { email: participantData.email },
-    update: participantData,
-    create: participantData,
+    update: {
+      fullName: participantData.fullName,
+      email: participantData.email,
+      dateOfBirth: participantData.dateOfBirth,
+    },
+    create: {
+      fullName: participantData.fullName,
+      email: participantData.email,
+      dateOfBirth: participantData.dateOfBirth,
+    },
   });
 
   return await prisma.lists.create({
     data: {
       eventId,
       participantId: participant.id,
-      heardFrom,
+      heardFrom: participantData.heardFrom,
     },
   });
 };

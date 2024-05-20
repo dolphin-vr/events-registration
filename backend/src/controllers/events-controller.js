@@ -1,4 +1,4 @@
-import dbService from "../services/dbService";
+import dbService from "../services/dbService.js";
 
 const createEvent = async (req, res) => {
   try {
@@ -20,11 +20,7 @@ const getEventById = async (req, res) => {
 
 const getEvents = async (req, res) => {
   try {
-    const pagination = {
-      skip: parseInt(req.query.page, 10) || 0,
-      take: parseInt(req.query.limit, 10) || 10,
-    };
-    const events = await dbService.getEvents(pagination);
+    const events = await dbService.getEvents(req.query);
     res.json(events);
   } catch (error) {
     res.status(500).json({ error: error.message });
