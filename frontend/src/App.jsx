@@ -1,8 +1,10 @@
+import { Header } from "./components/Header";
+
 export const App=()=> {
 
   return (
     <>
-      <h1>Events Registration App</h1>
+      <Header />
     </>
   );
 }
