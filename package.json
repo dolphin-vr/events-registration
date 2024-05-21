@@ -1,4 +1,9 @@
 {
+  "name": "events-registration",
+  "version": "0.0.0",
+  "author": "dolphin-vr",
+  "private": true,
+  "license": "ISC",
   "scripts": {
     "start": "node backend/src/server.js",
     "build": "cd frontend && yarn && yarn build && cd ../backend && yarn"
