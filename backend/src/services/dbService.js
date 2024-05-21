@@ -31,17 +31,18 @@ const getEvents = async pagination => {
 
 // participantData: Participant
 const registerParticipant = async (participantData, eventId) => {
+  console.log("iso= ", (new Date(participantData.dateOfBirth)).toISOString());
   const participant = await prisma.participant.upsert({
     where: { email: participantData.email },
     update: {
       fullName: participantData.fullName,
       email: participantData.email,
-      dateOfBirth: participantData.dateOfBirth,
+      dateOfBirth: new Date(participantData.dateOfBirth).toISOString(),
     },
     create: {
       fullName: participantData.fullName,
       email: participantData.email,
-      dateOfBirth: participantData.dateOfBirth,
+      dateOfBirth: new Date(participantData.dateOfBirth).toISOString(),
     },
   });
 

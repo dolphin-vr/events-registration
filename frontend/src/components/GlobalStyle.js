@@ -46,9 +46,6 @@ ul {
 
   button{
     cursor: pointer;
-    /* display: flex;
-    justify-content: center;
-    align-items: center; */
     padding: 4px 24px;
     font-size: 18px;
     font-weight: 500;
