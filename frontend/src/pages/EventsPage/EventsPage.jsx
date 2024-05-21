@@ -3,7 +3,8 @@ import { Container, EventsGrid, PageLink, PaginationContainer, Title } from "./E
 import { EventCard } from "../../components/EventCard/EventCard";
 import { Loader } from "../../components/Loader/Loader";
 import { getEvents } from "../../shared/api/events";
-import { ModalRegister } from "../../components/ModalRegister/ModalRegister";
+import { ModalRegister } from "../../components/Modals/ModalRegister";
+import { ModalParticipants } from "../../components/Modals/ModalParticipants";
 
 export const EventsPage = () => {
   const [loader, setLoader] = useState(false);
@@ -12,7 +13,8 @@ export const EventsPage = () => {
   const [event, setEventId] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const eventsPerPage = 9;
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
+  const [isParticipantsModalOpen, setParticipantsModalOpen] = useState(false);
 
   const controllerRef = useRef();
   useEffect(() => {
@@ -47,14 +49,13 @@ export const EventsPage = () => {
 
   const paginate = pageNumber => setCurrentPage(pageNumber);
 
-  const handleToggleModal = event => {
+  const handleToggleRegisterModal = event => {
     setEventId(event);
-    // if (id) {
-    //   setEventId(null);
-    // } else {
-    //   setEventId(id);
-    // }
-    setModalOpen(!isModalOpen);
+    setRegisterModalOpen(!isRegisterModalOpen);
+  };
+  const handleToggleParticipantsModal = event => {
+    setEventId(event);
+    setParticipantsModalOpen(!isParticipantsModalOpen);
   };
 
   return (
@@ -64,7 +65,7 @@ export const EventsPage = () => {
         <Title>Events</Title>
         <EventsGrid>
           {currentEvents.map(event => (
-            <EventCard key={event.id} event={event} handleRegister={handleToggleModal} />
+            <EventCard key={event.id} event={event} handleRegister={handleToggleRegisterModal} handleView={handleToggleParticipantsModal} />
           ))}
         </EventsGrid>
         <PaginationContainer>
@@ -76,7 +77,8 @@ export const EventsPage = () => {
         </PaginationContainer>
         {error && <span>Error. Try again {error}</span>}
       </Container>
-      {isModalOpen && <ModalRegister event={event} onClose={handleToggleModal} />}
+      {isRegisterModalOpen && <ModalRegister event={event} onClose={handleToggleRegisterModal} />}
+      {isParticipantsModalOpen && <ModalParticipants event={event} onClose={handleToggleParticipantsModal} />}
     </>
   );
 };

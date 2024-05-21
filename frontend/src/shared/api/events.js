@@ -11,8 +11,15 @@ export const getEvents = async (page, limit, sig) => {
 };
 
 export const registerParticipant = async (participantData, eventId) => {
-    console.log("param= ", participantData, eventId);
+    // console.log("param= ", participantData, eventId);
   const { data } = await requester.post(`/events/register/${eventId}`, participantData);
+    // console.log("data= ", data);
+  return data;
+};
+
+export const getParticipantsByEvent = async (eventId, sig) => {
+  requester.signal = sig;
+  const { data } = await requester.get(`/events/participants/${eventId}`);
     console.log("data= ", data);
   return data;
 };

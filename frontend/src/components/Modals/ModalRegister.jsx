@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { Backdrop, ModalWindow, Title, FormGroup, Label, Input, RadioGroup, RadioLabel, RadioInput, ButtonGroup, Button, EventTitle } from "./ModalRegister.styled";
+import { Backdrop, ModalWindow, Title, FormGroup, Label, Input, RadioGroup, RadioLabel, RadioInput, ButtonGroup, Button, EventTitle } from "./Modals.styled";
 import { validationSchema } from "../../shared/models/schemas";
 import { registerParticipant } from "../../shared/api/events";
 
