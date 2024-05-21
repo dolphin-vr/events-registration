@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.li`
   position: relative;
-  height: 200px;
+  height: 280px;
   border: 1px solid #f59255;
   border-radius: 8px;
   padding: 20px;
@@ -15,13 +15,29 @@ export const Container = styled.li`
 `;
 
 export const Title = styled.h2`
-  font-size: 1.5em;
+  height: 44px;
   margin-bottom: 10px;
+  font-size: 1.5em;
+	text-align: center;
 `;
 
 export const Description = styled.p`
+height: 58px;
   font-size: 1em;
   margin-bottom: 20px;
+`;
+
+export const EventDate = styled.p`
+  margin: 0 0 12px;
+  font-size: 14px;
+	text-align: right;
+`;
+
+export const Organizer = styled.p`
+  margin: 0 0 20px;
+  font-size: 14px;
+  text-align: right;
+	font-weight: 600;
 `;
 
 export const BtnRegister = styled.button`

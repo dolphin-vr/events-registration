@@ -31,9 +31,12 @@ const registerParticipant = async (req, res) => {
   try {
     const participantData = { ...req.body };
     const eventId = parseInt(req.params.id, 10);
+    console.log("id= ", eventId);
+    console.log("partic = ", participantData);
     const participant = await dbService.registerParticipant(participantData, eventId);
     res.status(201).json(participant);
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: error.message });
   }
 };
