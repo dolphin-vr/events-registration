@@ -12,10 +12,15 @@ export const Title = styled.h1`
   margin-bottom: 20px;
 `;
 
+export const ScrollContainer = styled.div`
+  overflow-y: auto;
+`;
 export const EventsGrid = styled.ul`
+  height: calc(100vh - 112px);
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
+  /* overflow-y: auto; */
 `;
 
 export const PaginationContainer = styled.div`

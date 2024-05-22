@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const Spinner = styled.div`
+export const CenterContainer = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
@@ -11,7 +11,19 @@ export const Spinner = styled.div`
   justify-content: center;
   align-items: center;
 `;
-export const Icon = styled.div`
+
+export const BottomContainer = styled.div`
+  /* position: absolute;
+  bottom: 0;
+  left: 50%; */
+  width: 40px;
+  height: 40px;
+  transform: translateX(-50vw);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+export const Circle = styled.div`
   width: 120px;
   aspect-ratio: 1;
   border-radius: 50%;

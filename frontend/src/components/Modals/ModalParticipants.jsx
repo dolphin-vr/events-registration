@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Loader } from "../Loader/Loader";
+import { PageSpinner } from "../Spinners/PageSpinner";
 import { getParticipantsByEvent } from "../../shared/api/events";
 import { Backdrop, BtnClose, Email, EventTitle, FullName, ModalWindow, ParticipantItem, ParticipantList, SearchInput, Title } from "./Modals.styled";
 
@@ -69,7 +69,7 @@ export const ModalParticipants = ({ event, onClose }) => {
   return createPortal(
     <>
       {loader ? (
-        <Loader />
+        <PageSpinner />
       ) : (
         <Backdrop onClick={handleBackdropClick}>
           <ModalWindow ref={modalRef}>
