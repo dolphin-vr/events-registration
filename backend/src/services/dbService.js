@@ -17,21 +17,30 @@ const getEventById = async eventId => {
 };
 
 // skip, take: number (page and limit)
-const getEvents = async pagination => {
-  const skip = parseInt(pagination.page, 10) || 1;
-  const take = parseInt(pagination.limit, 10) || 10;
+const getEvents = async query => {
+  const { page, limit, sortBy = "id", sortOrder = "asc", title, date, organizer } = query;
+  console.log('page - ', typeof page, ' limit - ',typeof limit, 'sort = ', sortBy, sortOrder, 'filters - ', title,date,organizer)
+  const filters = {};
+  if (title) filters.title = { contains: title, mode: "insensitive" };
+  if (date) filters.eventDate = { equals: new Date(date) };
+  if (organizer) filters.organizer = { contains: organizer, mode: "insensitive" };
+  const skip = parseInt(page, 10) || 1;
+  const take = parseInt(limit, 10) || 10;
+
   const events = await prisma.event.findMany({
-    skip: (skip-1)*take,
+    where: filters,
+    skip: (skip - 1) * take,
     take: take,
+    orderBy: { [sortBy]: sortOrder },
   });
-  const total = await prisma.event.count();
+  const total = await prisma.event.count({ where: filters });
   const result = { total, events };
   return result;
 };
 
 // participantData: Participant
 const registerParticipant = async (participantData, eventId) => {
-  console.log("iso= ", (new Date(participantData.dateOfBirth)).toISOString());
+  console.log("iso= ", new Date(participantData.dateOfBirth).toISOString());
   const participant = await prisma.participant.upsert({
     where: { email: participantData.email },
     update: {
