@@ -1,4 +1,3 @@
-// import { company, lorem, date, name, internet, random } from "faker";
 import { faker } from "@faker-js/faker";
 
 export const generateEvent = () => {

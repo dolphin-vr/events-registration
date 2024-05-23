@@ -18,20 +18,31 @@ const getEventById = async eventId => {
 
 // skip, take: number (page and limit)
 const getEvents = async query => {
-  const { page, limit, sortBy = "id", sortOrder = "asc", title, date, organizer } = query;
-  console.log('page - ', typeof page, ' limit - ',typeof limit, 'sort = ', sortBy, sortOrder, 'filters - ', title,date,organizer)
-  const filters = {};
-  if (title) filters.title = { contains: title, mode: "insensitive" };
-  if (date) filters.eventDate = { equals: new Date(date) };
-  if (organizer) filters.organizer = { contains: organizer, mode: "insensitive" };
+  const { page, limit, sort, title, date, organizer } = query;
   const skip = parseInt(page, 10) || 1;
   const take = parseInt(limit, 10) || 10;
+  const orderBy = sort
+    ? sort.split(",").map(param => {
+        const [field, order] = param.split(":");
+        return { [field]: order };
+      })
+    : [];
+  const filters = {};
+  if (title) filters.title = { contains: title, mode: "insensitive" };
+  if (date) {
+    const isoDate = new Date(date).toISOString().split("T")[0];
+    filters.eventDate = {
+      gte: new Date(isoDate),
+      lt: new Date(new Date(isoDate).setDate(new Date(isoDate).getDate() + 1)),
+    };
+  }
+  if (organizer) filters.organizer = { contains: organizer, mode: "insensitive" };
 
   const events = await prisma.event.findMany({
     where: filters,
     skip: (skip - 1) * take,
     take: take,
-    orderBy: { [sortBy]: sortOrder },
+    orderBy,
   });
   const total = await prisma.event.count({ where: filters });
   const result = { total, events };

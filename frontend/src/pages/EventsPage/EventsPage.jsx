@@ -14,14 +14,12 @@ export const EventsPage = () => {
   const [events, setEvents] = useState([]);
   const [event, setEventId] = useState({});
   const [page, setPage] = useState(1);
-  // const [total, setTotal] = useState(0);
   const [hasNextPage, setHasNextPage] = useState(true);
-  // const [currentPage, setCurrentPage] = useState(1);
   const eventsPerPage = 9;
   const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
   const [isParticipantsModalOpen, setParticipantsModalOpen] = useState(false);
   const [filters, setFilters] = useState({ title: "", eventDate: "", organizer: "" });
-  const [sortOrder, setSortOrder] = useState({ title: "asc", eventDate: "asc", organizer: "asc" });
+  const [sortOrder, setSortOrder] = useState([]);
 
   const controllerRef = useRef();
   useEffect(() => {
@@ -33,10 +31,8 @@ export const EventsPage = () => {
       try {
         setLoading(true);
         setError(false);
-        const responce = await getEvents(page, eventsPerPage, controllerRef.current.signal);
-        // setTotal(responce.total);
+        const responce = await getEvents(page, eventsPerPage, sortOrder, filters, controllerRef.current.signal);
         setEvents(prevEvents => [...prevEvents, ...responce.events]);
-        // setEvents(prevEvents => [...new Set([...prevEvents, ...responce.events])]);
         setHasNextPage(responce.total - page * eventsPerPage > 0);
       } catch (error) {
         if (error.code !== "ERR_CANCELED") {
@@ -51,7 +47,7 @@ export const EventsPage = () => {
     return () => {
       controllerRef.current.abort();
     };
-  }, [page]);
+  }, [filters, page, sortOrder]);
 
   const handleToggleRegisterModal = event => {
     setEventId(event);
@@ -70,36 +66,52 @@ export const EventsPage = () => {
     rootMargin: "0px 0px 400px 0px",
   });
 
-  
-  const handleSort = key => {
-    console.log('events= ', events)
-    const sortedEvents = [...events].sort((a, b) => {
-      if (sortOrder[key] === "asc") {
-        return a[key].localeCompare(b[key]);
+
+  const handleFilters = e => {
+    const { name, value } = e.target;
+    setFilters({ ...filters, [name]: value });
+    setEvents([]);
+    setPage(1);
+    setHasNextPage(true);
+  }; 
+
+  const handleSort = field => {
+    setSortOrder(prevSortOrder => {
+      const idx = prevSortOrder.findIndex(sort => sort.field === field);
+      let newSortOrder = [];
+      if (!!~idx) {
+        const newSort = [...prevSortOrder];
+        newSort[idx].order = newSort[idx].order === "asc" ? "desc" : "asc";
+        const [primaryKey] = newSort.splice(idx, 1);
+        newSortOrder=[primaryKey, ...newSort];
       } else {
-        return b[key].localeCompare(a[key]);
+        newSortOrder = [{ field, order: "asc" }, ...prevSortOrder];
       }
+      return newSortOrder;
     });
-    const order = sortOrder[key] === "asc" ? "desc" : "asc";
-    console.log("sort= ", key, " - ", order);
-    console.log("sortedEvents= ", sortedEvents);
-    setEvents(sortedEvents);
-    setSortOrder({ ...sortOrder, [key]: order });
+    setEvents([]);
+    setPage(1);
+    setHasNextPage(true);
   };
 
-  // console.log("len= ", events.length, " hasNext= ", hasNextPage, " loader= ", loading, " page= ", page, " sig= ", controllerRef.current);
+  const handleResetFilters = () => {
+    setFilters({ title: "", date: "", organizer: "" });
+    setSortOrder([]);
+    setEvents([]);
+    setPage(1);
+    setHasNextPage(true);
+  };
 
-  const filteredEvents = events.filter(event => event.title.toLowerCase().includes(filters.title.toLowerCase()) || event.organizer.toLowerCase().includes(filters.organizer.toLowerCase()));
-
-  const scrollOption={loading,hasNextPage,sentryRef}
+  const scrollOption = { loading, hasNextPage, sentryRef }
+  
   return (
     <>
       <Container>
         {loading && <PageSpinner />}
         <Title>Events</Title>
-        <Filter filters={filters} sortOrder={sortOrder} changeFilters={setFilters} changeSort={handleSort} />
-        <EventsList events={filteredEvents} scrollOption={scrollOption} handleRegister={handleToggleRegisterModal} handleView={handleToggleParticipantsModal} />
-        {error && <span>Error. Try again</span>}
+        <Filter filters={filters} sortOrder={sortOrder} changeFilters={handleFilters} changeSort={handleSort} onReset={handleResetFilters} />
+        <EventsList events={events} scrollOption={scrollOption} handleRegister={handleToggleRegisterModal} handleView={handleToggleParticipantsModal} />
+        {error && <span>Error. Please try again</span>}
       </Container>
       {isRegisterModalOpen && <ModalRegister event={event} onClose={handleToggleRegisterModal} />}
       {isParticipantsModalOpen && <ModalParticipants event={event} onClose={handleToggleParticipantsModal} />}
