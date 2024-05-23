@@ -25,10 +25,12 @@ export const ModalRegister = ({ event, onClose }) => {
   };
 
   const handleSubmit = async values => {
-    console.log("form values= ", values);
-    console.log("id= ", event.id);
-    const result = await registerParticipant(values, event.id);
-    console.log("result= ", result);
+    try {
+      const result = await registerParticipant(values, event.id);
+      if (result) onClose({}, true);
+    } catch (error) {
+      onClose({}, false);
+    }
   };
 
   return createPortal(
@@ -46,7 +48,6 @@ export const ModalRegister = ({ event, onClose }) => {
           validationSchema={validationSchema}
           onSubmit={values => {
             handleSubmit(values);
-            onClose({});
           }}>
           {() => (
             <Form>
@@ -84,7 +85,7 @@ export const ModalRegister = ({ event, onClose }) => {
                 <ErrorMessage name="heardFrom" component="div" />
               </FormGroup>
               <ButtonGroup>
-                <Button type="button" onClick={()=>onClose({})}>
+                <Button type="button" onClick={() => onClose({})}>
                   Cancel
                 </Button>
                 <Button type="submit">Submit</Button>

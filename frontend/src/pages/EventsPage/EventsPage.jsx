@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import useInfiniteScroll from "react-infinite-scroll-hook";
-import { Container,  Title } from "./EventsPage.styled";
+import { Container, Title } from "./EventsPage.styled";
 import { PageSpinner } from "../../components/Spinners/PageSpinner";
 import { getEvents } from "../../shared/api/events";
 import { ModalRegister } from "../../components/Modals/ModalRegister";
 import { ModalParticipants } from "../../components/Modals/ModalParticipants";
 import { Filter } from "../../components/Filter/Filter";
 import { EventsList } from "../../components/EventsList/EventsList";
+import { ModalMessage } from "../../components/Modals/ModalMessage";
 
 export const EventsPage = () => {
   const [loading, setLoading] = useState(false);
@@ -20,6 +21,8 @@ export const EventsPage = () => {
   const [isParticipantsModalOpen, setParticipantsModalOpen] = useState(false);
   const [filters, setFilters] = useState({ title: "", eventDate: "", organizer: "" });
   const [sortOrder, setSortOrder] = useState([]);
+  const [isOK, setIsOK] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
 
   const controllerRef = useRef();
   useEffect(() => {
@@ -49,14 +52,21 @@ export const EventsPage = () => {
     };
   }, [filters, page, sortOrder]);
 
-  const handleToggleRegisterModal = event => {
+  const handleToggleRegisterModal = (event, result) => {
     setEventId(event);
     setRegisterModalOpen(!isRegisterModalOpen);
+    if (!Object.keys(event).length) {
+      setIsOK(result);
+      setShowPopup(!showPopup);
+    }
   };
   const handleToggleParticipantsModal = event => {
     setEventId(event);
     setParticipantsModalOpen(!isParticipantsModalOpen);
   };
+  const handleTogglePopup = () => {
+    setShowPopup(!showPopup)
+  }
 
   const [sentryRef] = useInfiniteScroll({
     loading,
@@ -66,14 +76,13 @@ export const EventsPage = () => {
     rootMargin: "0px 0px 400px 0px",
   });
 
-
   const handleFilters = e => {
     const { name, value } = e.target;
     setFilters({ ...filters, [name]: value });
     setEvents([]);
     setPage(1);
     setHasNextPage(true);
-  }; 
+  };
 
   const handleSort = field => {
     setSortOrder(prevSortOrder => {
@@ -83,7 +92,7 @@ export const EventsPage = () => {
         const newSort = [...prevSortOrder];
         newSort[idx].order = newSort[idx].order === "asc" ? "desc" : "asc";
         const [primaryKey] = newSort.splice(idx, 1);
-        newSortOrder=[primaryKey, ...newSort];
+        newSortOrder = [primaryKey, ...newSort];
       } else {
         newSortOrder = [{ field, order: "asc" }, ...prevSortOrder];
       }
@@ -102,19 +111,20 @@ export const EventsPage = () => {
     setHasNextPage(true);
   };
 
-  const scrollOption = { loading, hasNextPage, sentryRef }
-  
+  const scrollOption = { loading, hasNextPage, sentryRef };
+
   return (
     <>
       <Container>
         {loading && <PageSpinner />}
         <Title>Events</Title>
         <Filter filters={filters} sortOrder={sortOrder} changeFilters={handleFilters} changeSort={handleSort} onReset={handleResetFilters} />
-        <EventsList events={events} scrollOption={scrollOption} handleRegister={handleToggleRegisterModal} handleView={handleToggleParticipantsModal} />
+        {!error && <EventsList events={events} scrollOption={scrollOption} handleRegister={handleToggleRegisterModal} handleView={handleToggleParticipantsModal} />}
         {error && <span>Error. Please try again</span>}
       </Container>
       {isRegisterModalOpen && <ModalRegister event={event} onClose={handleToggleRegisterModal} />}
       {isParticipantsModalOpen && <ModalParticipants event={event} onClose={handleToggleParticipantsModal} />}
+      {showPopup && <ModalMessage isOk={isOK} onClose={handleTogglePopup} />}
     </>
   );
 };
