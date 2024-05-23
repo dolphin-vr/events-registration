@@ -45,7 +45,6 @@ export const ModalRegister = ({ event, onClose }) => {
           }}
           validationSchema={validationSchema}
           onSubmit={values => {
-            // console.log("form values= ", values);
             handleSubmit(values);
             onClose({});
           }}>

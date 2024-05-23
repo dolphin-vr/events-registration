@@ -23,7 +23,7 @@ export const FilterLabel = styled.label`
 export const FilterInput = styled.input`
   padding: 5px;
   margin-right: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid ${({ theme }) => theme.colors.activeBtn};
   border-radius: 4px;
 `;
 
@@ -31,21 +31,8 @@ export const BtnSort = styled.button`
   padding: 4px 8px;
   font-size: 12px;
   font-weight: 600;
-  /* background: #f59255; */
-  color: white;
-  &:hover {
-    background: #d27a43;
-  }
 `;
 
 export const BtnReset = styled.button`
-  padding: 5px 10px;
-  cursor: pointer;
-  border: none;
-  border-radius: 4px;
-  background: #007bff;
-  color: white;
-  &:hover {
-    background: #0056b3;
-  }
+  padding: 4px 8px;
 `;

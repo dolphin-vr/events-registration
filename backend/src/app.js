@@ -1,6 +1,5 @@
 import express from "express";
 import cors from "cors";
-// import fs from "fs/promises";
 import path from "path";
 
 import eventRouter from "./routes/events-router.js";

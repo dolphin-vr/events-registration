@@ -103,7 +103,7 @@ export const SearchInput = styled.input`
   width: 100%;
   padding: 10px;
   margin-bottom: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid ${({ theme }) => theme.colors.activeBtn};
   border-radius: 4px;
 `;
 
@@ -113,10 +113,10 @@ export const ParticipantList = styled.ul`
 `;
 
 export const ParticipantItem = styled.li`
-display: flex;
-justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
   padding: 10px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.activeBtn};
 `;
 
 export const FullName = styled.span`

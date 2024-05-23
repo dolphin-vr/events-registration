@@ -13,9 +13,6 @@ export const CenterContainer = styled.div`
 `;
 
 export const BottomContainer = styled.div`
-  /* position: absolute;
-  bottom: 0;
-  left: 50%; */
   width: 40px;
   height: 40px;
   transform: translateX(-50vw);
