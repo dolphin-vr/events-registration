@@ -13,8 +13,8 @@ export const Backdrop = styled.div`
 `;
 
 export const ModalWindow = styled.div`
-position: relative;
-overflow: hidden;
+  position: relative;
+  overflow: hidden;
   background: white;
   padding: 20px;
   border-radius: 8px;
@@ -89,14 +89,14 @@ export const Button = styled.button`
 `;
 
 export const BtnClose = styled.button`
-position: absolute;
-top: 12px;
-right: 12px;
-padding: 4px 8px;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 8px;
+  color: black;
   background: none;
   border: none;
   font-size: 18px;
-  cursor: pointer;
 `;
 
 export const SearchInput = styled.input`
@@ -120,9 +120,24 @@ export const ParticipantItem = styled.li`
 `;
 
 export const FullName = styled.span`
-font-weight: 500;
-`
+  font-weight: 500;
+`;
 
 export const Email = styled.span`
   font-style: italic;
 `;
+
+export const MessageOK = styled.span`
+  display: block;
+  font-size: 14px;
+  text-align: center;
+`;
+
+export const MessageError = styled(MessageOK)`
+  color: ${({ theme }) => theme.colors.red};
+`;
+
+export const BtnOK = styled.button`
+display: block;
+margin: 24px auto 0;
+`

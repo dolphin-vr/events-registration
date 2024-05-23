@@ -20,7 +20,6 @@ export const registerParticipant = async (participantData, eventId) => {
 export const getParticipantsByEvent = async (eventId, sig) => {
   requester.signal = sig;
   const { data } = await requester.get(`/events/participants/${eventId}`);
-  console.log("data= ", data);
   return data;
 };
 

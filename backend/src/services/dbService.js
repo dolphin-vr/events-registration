@@ -51,7 +51,6 @@ const getEvents = async query => {
 
 // participantData: Participant
 const registerParticipant = async (participantData, eventId) => {
-  console.log("iso= ", new Date(participantData.dateOfBirth).toISOString());
   const participant = await prisma.participant.upsert({
     where: { email: participantData.email },
     update: {
