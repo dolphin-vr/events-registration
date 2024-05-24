@@ -27,8 +27,10 @@ export const ModalRegister = ({ event, onClose }) => {
   const handleSubmit = async values => {
     try {
       const result = await registerParticipant(values, event.id);
-      if (result) onClose({}, true);
+      console.log('res=', result)
+      if (result.status) onClose({}, true);
     } catch (error) {
+      console.log("error=", error.response.status);
       onClose({}, false);
     }
   };

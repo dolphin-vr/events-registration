@@ -13,8 +13,8 @@ export const getEvents = async (page, limit, sortOrder, filters, sig) => {
 };
 
 export const registerParticipant = async (participantData, eventId) => {
-  const { data } = await requester.post(`/events/register/${eventId}`, participantData);
-  return data;
+  const result = await requester.post(`/events/register/${eventId}`, participantData);
+  return result;
 };
 
 export const getParticipantsByEvent = async (eventId, sig) => {
