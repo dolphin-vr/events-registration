@@ -1,4 +1,5 @@
 import dbService from "../services/dbService.js";
+import { HttpError } from "../helpers/index.js";
 
 const createEvent = async (req, res) => {
   try {
@@ -34,6 +35,12 @@ const registerParticipant = async (req, res) => {
     const participant = await dbService.registerParticipant(participantData, eventId);
     res.status(201).json(participant);
   } catch (error) {
+    console.log("ctrl err= ", error);
+    if (error.status === 409) {
+      console.log("ctrl 409");
+      res.status(409).json({ error: error.message });
+      // throw HttpError(409, "Participant already registered on this event");
+    }
     res.status(500).json({ error: error.message });
   }
 };

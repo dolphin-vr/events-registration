@@ -1,4 +1,6 @@
 import { PrismaClient } from "@prisma/client";
+import { HttpError } from "../helpers/index.js";
+
 const prisma = new PrismaClient();
 
 // eventData: Event
@@ -51,6 +53,7 @@ const getEvents = async query => {
 
 // participantData: Participant
 const registerParticipant = async (participantData, eventId) => {
+    try {
   const participant = await prisma.participant.upsert({
     where: { email: participantData.email },
     update: {
@@ -71,7 +74,16 @@ const registerParticipant = async (participantData, eventId) => {
       participantId: participant.id,
       heardFrom: participantData.heardFrom,
     },
-  });
+  });  
+    } catch (error) {
+      console.log('api err= ', error)
+      if (error.code === "P2002") {
+        console.log("api p2002");
+        // throw new Error({ status: 409, message: "Participant is already registered for this event" });
+         throw HttpError(409, "Participant already registered on this event");
+      }
+    throw error;
+  }
 };
 
 // eventId: number
