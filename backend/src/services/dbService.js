@@ -53,35 +53,35 @@ const getEvents = async query => {
 
 // participantData: Participant
 const registerParticipant = async (participantData, eventId) => {
-    try {
-  const participant = await prisma.participant.upsert({
-    where: { email: participantData.email },
-    update: {
-      fullName: participantData.fullName,
-      email: participantData.email,
-      dateOfBirth: new Date(participantData.dateOfBirth).toISOString(),
-    },
-    create: {
-      fullName: participantData.fullName,
-      email: participantData.email,
-      dateOfBirth: new Date(participantData.dateOfBirth).toISOString(),
-    },
-  });
+  try {
+    const participant = await prisma.participant.upsert({
+      where: { email: participantData.email },
+      update: {
+        fullName: participantData.fullName,
+        email: participantData.email,
+        dateOfBirth: new Date(participantData.dateOfBirth).toISOString(),
+      },
+      create: {
+        fullName: participantData.fullName,
+        email: participantData.email,
+        dateOfBirth: new Date(participantData.dateOfBirth).toISOString(),
+      },
+    });
 
-  return await prisma.lists.create({
-    data: {
-      eventId,
-      participantId: participant.id,
-      heardFrom: participantData.heardFrom,
-    },
-  });  
-    } catch (error) {
-      console.log('api err= ', error)
-      if (error.code === "P2002") {
-        console.log("api p2002");
-        // throw new Error({ status: 409, message: "Participant is already registered for this event" });
-         throw HttpError(409, "Participant already registered on this event");
-      }
+    return await prisma.lists.create({
+      data: {
+        eventId,
+        participantId: participant.id,
+        heardFrom: participantData.heardFrom,
+      },
+    });
+  } catch (error) {
+    // console.log("api err= ", error);
+    if (error.code === "P2002") {
+      // console.log("api p2002");
+      // throw new Error({ status: 409, message: "Participant is already registered for this event" });
+      throw HttpError(409, "Participant already registered on this event");
+    }
     throw error;
   }
 };

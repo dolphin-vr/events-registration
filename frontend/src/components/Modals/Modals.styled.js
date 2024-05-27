@@ -1,3 +1,4 @@
+import { ErrorMessage } from "formik";
 import styled from "styled-components";
 
 export const Backdrop = styled.div`
@@ -39,14 +40,19 @@ export const FormGroup = styled.div`
 `;
 
 export const Label = styled.label`
-  display: block;
-  margin-bottom: 5px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 24px;
+  font-size: 12px;
 `;
 
 export const Input = styled.input`
   width: 100%;
   padding: 8px;
   box-sizing: border-box;
+  border-radius: 4px;
 `;
 
 export const RadioGroup = styled.div`
@@ -62,6 +68,16 @@ export const RadioLabel = styled.label`
 
 export const RadioInput = styled.input`
   margin-right: 5px;
+`;
+
+export const ErrorMsg = styled(ErrorMessage)`
+  position: absolute;
+  left: 0;
+  bottom: -16px;
+  margin: 0;
+  color: ${({ theme }) => theme.colors.red};
+  font-size: 12px;
+  /* line-height: 1.28; */
 `;
 
 export const ButtonGroup = styled.div`

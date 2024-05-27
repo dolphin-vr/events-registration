@@ -16,3 +16,11 @@ export const ScrollContainer = styled.div`
   overflow-y: auto;
 `;
 
+
+export const ErrMsg = styled.div`
+  margin: ${({ theme }) => theme.spacing(12)} auto;
+  font-size: 24px;
+  font-weight: 500;
+  text-align: center;
+  color: ${({ theme }) => theme.colors.red};
+`;

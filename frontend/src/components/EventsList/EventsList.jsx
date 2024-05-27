@@ -1,5 +1,4 @@
-import { EventCard } from "../EventCard/EventCard";
-import { BottomSpinner } from "../Spinners/BottomSpinner";
+import { BottomSpinner, EventCard } from "../index";
 import { EventsGrid } from "./EventsList.styled";
 
 export const EventsList = ({ events, scrollOption, handleRegister, handleView }) => {
