@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import { Backdrop, ModalWindow, Title, FormGroup, Label, Input, RadioGroup, RadioLabel, RadioInput, ButtonGroup, Button, EventTitle } from "./Modals.styled";
+import { Formik, Form, Field } from "formik";
+import { Backdrop, ModalWindow, Title, FormGroup, Label, Input, RadioLabel, RadioInput, ButtonGroup, Button, EventTitle, ErrorMsg } from "./Modals.styled";
+import {DateSelector} from '../index'
 import { validationSchema } from "../../shared/models/schemas";
 import { registerParticipant } from "../../shared/api/events";
 
@@ -11,7 +12,7 @@ export const ModalRegister = ({ event, onClose }) => {
   useEffect(() => {
     const close = e => {
       if (e.keyCode === 27) {
-        onClose({});
+        onClose({}, null);
       }
     };
     window.addEventListener("keydown", close);
@@ -20,18 +21,20 @@ export const ModalRegister = ({ event, onClose }) => {
 
   const handleBackdropClick = event => {
     if (event.currentTarget === event.target) {
-      onClose({});
+      onClose({}, null);
     }
   };
 
   const handleSubmit = async values => {
     try {
       const result = await registerParticipant(values, event.id);
-      console.log('res=', result)
-      if (result.status) onClose({}, true);
+      if (result.status) onClose({}, result.status);
     } catch (error) {
-      console.log("error=", error.response.status);
-      onClose({}, false);
+      if (!error.response) {
+        onClose({}, 500);
+      } else {
+        onClose({}, error.response.status);
+      }
     }
   };
 
@@ -53,24 +56,26 @@ export const ModalRegister = ({ event, onClose }) => {
           }}>
           {() => (
             <Form>
-              <FormGroup>
-                <Label htmlFor="fullName">Full name</Label>
-                <Field name="fullName" as={Input} />
-                <ErrorMessage name="fullName" component="div" />
-              </FormGroup>
-              <FormGroup>
-                <Label htmlFor="email">Email</Label>
+              <Label>
+                Full name
+                <Field name="fullName" as={Input} type="text" />
+                <ErrorMsg name="fullName" component="span" />
+              </Label>
+              <Label>
+                Email
                 <Field name="email" as={Input} type="email" />
-                <ErrorMessage name="email" component="div" />
-              </FormGroup>
+                <ErrorMsg name="email" component="span" />
+              </Label>
+              <Label htmlFor="dateOfBirth">
+                Date of birth
+                <DateSelector name="dateOfBirth" />
+                {/* <Field name="dateOfBirth" label="Date of Birth" component={DateSelector} /> */}
+                {/* <Field name="dateOfBirth" as={Input} type="date" /> */}
+                <ErrorMsg name="dateOfBirth" component="span" />
+              </Label>
               <FormGroup>
-                <Label htmlFor="dateOfBirth">Date of birth</Label>
-                <Field name="dateOfBirth" as={Input} type="date" />
-                <ErrorMessage name="dateOfBirth" component="div" />
-              </FormGroup>
-              <FormGroup>
-                <Label>Where did you hear about this event?</Label>
-                <RadioGroup>
+                <Label>
+                  Where did you hear about this event?
                   <RadioLabel>
                     <Field name="heardFrom" as={RadioInput} type="radio" value="Social media" />
                     Social media
@@ -83,11 +88,11 @@ export const ModalRegister = ({ event, onClose }) => {
                     <Field name="heardFrom" as={RadioInput} type="radio" value="Found myself" />
                     Found myself
                   </RadioLabel>
-                </RadioGroup>
-                <ErrorMessage name="heardFrom" component="div" />
+                  <ErrorMsg name="heardFrom" component="span" />
+                </Label>
               </FormGroup>
               <ButtonGroup>
-                <Button type="button" onClick={() => onClose({})}>
+                <Button type="button" onClick={() => onClose({}, null)}>
                   Cancel
                 </Button>
                 <Button type="submit">Submit</Button>

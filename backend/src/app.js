@@ -1,13 +1,17 @@
 import express from "express";
 import cors from "cors";
 import path from "path";
+import {logger} from './helpers/index.js'
 
 import eventRouter from "./routes/events-router.js";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-
+app.use((req, res, next) => {
+  logger.info(`REQUEST: ${req.method} ${req.url}`); // Логування запитів
+  next();
+});
 
 app.use(express.static(path.resolve("frontend", "dist")));
 
@@ -22,7 +26,8 @@ app.get("*", (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  const { status = 500, message = "Server error" } = err;
+  logger.error(`ERROR OCCURS: ${err.message}`); // Логування помилки
+  const { status = 500, message = "Internal server error" } = err;
   res.status(status).json({ message });
 });
 

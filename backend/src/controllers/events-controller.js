@@ -35,13 +35,14 @@ const registerParticipant = async (req, res) => {
     const participant = await dbService.registerParticipant(participantData, eventId);
     res.status(201).json(participant);
   } catch (error) {
-    console.log("ctrl err= ", error);
+    // console.log("ctrl err= ", error);
     if (error.status === 409) {
       console.log("ctrl 409");
       res.status(409).json({ error: error.message });
       // throw HttpError(409, "Participant already registered on this event");
+    } else{
+      res.status(500).json({ error: error.message });
     }
-    res.status(500).json({ error: error.message });
   }
 };
 

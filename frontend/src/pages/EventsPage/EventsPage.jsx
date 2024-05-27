@@ -1,13 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import useInfiniteScroll from "react-infinite-scroll-hook";
-import { Container, Title } from "./EventsPage.styled";
-import { PageSpinner } from "../../components/Spinners/PageSpinner";
+import { Container, ErrMsg, Title } from "./EventsPage.styled";
 import { getEvents } from "../../shared/api/events";
-import { ModalRegister } from "../../components/Modals/ModalRegister";
-import { ModalParticipants } from "../../components/Modals/ModalParticipants";
-import { Filter } from "../../components/Filter/Filter";
-import { EventsList } from "../../components/EventsList/EventsList";
-import { ModalMessage } from "../../components/Modals/ModalMessage";
+import { EventsList, Filter, ModalMessage, ModalParticipants, ModalRegister, PageSpinner } from "../../components";
+
+const eventsPerPage = 9;
 
 export const EventsPage = () => {
   const [loading, setLoading] = useState(false);
@@ -16,12 +13,11 @@ export const EventsPage = () => {
   const [event, setEventId] = useState({});
   const [page, setPage] = useState(1);
   const [hasNextPage, setHasNextPage] = useState(true);
-  const eventsPerPage = 9;
   const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
   const [isParticipantsModalOpen, setParticipantsModalOpen] = useState(false);
   const [filters, setFilters] = useState({ title: "", eventDate: "", organizer: "" });
   const [sortOrder, setSortOrder] = useState([]);
-  const [isOK, setIsOK] = useState(null);
+  const [registerStatus, setRegisterStatus] = useState(null)
   const [showPopup, setShowPopup] = useState(false);
 
   const controllerRef = useRef();
@@ -52,18 +48,20 @@ export const EventsPage = () => {
     };
   }, [filters, page, sortOrder]);
 
-  const handleToggleRegisterModal = (event, result) => {
+  const handleToggleRegisterModal = (event, status) => {
     setEventId(event);
     setRegisterModalOpen(!isRegisterModalOpen);
-    if (!Object.keys(event).length) {
-      setIsOK(result);
+    if (!Object.keys(event).length && status) {
+      setRegisterStatus(status);
       setShowPopup(!showPopup);
     }
   };
+
   const handleToggleParticipantsModal = event => {
     setEventId(event);
     setParticipantsModalOpen(!isParticipantsModalOpen);
   };
+
   const handleTogglePopup = () => {
     setShowPopup(!showPopup)
   }
@@ -120,11 +118,11 @@ export const EventsPage = () => {
         <Title>Events</Title>
         <Filter filters={filters} sortOrder={sortOrder} changeFilters={handleFilters} changeSort={handleSort} onReset={handleResetFilters} />
         {!error && <EventsList events={events} scrollOption={scrollOption} handleRegister={handleToggleRegisterModal} handleView={handleToggleParticipantsModal} />}
-        {error && <span>Error. Please try again</span>}
+        {error && <ErrMsg>Something went wrong. Please try again.</ErrMsg>}
       </Container>
       {isRegisterModalOpen && <ModalRegister event={event} onClose={handleToggleRegisterModal} />}
       {isParticipantsModalOpen && <ModalParticipants event={event} onClose={handleToggleParticipantsModal} />}
-      {showPopup && <ModalMessage isOk={isOK} onClose={handleTogglePopup} />}
+      {showPopup && <ModalMessage status={registerStatus} onClose={handleTogglePopup} />}
     </>
   );
 };
